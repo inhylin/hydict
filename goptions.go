@@ -1,14 +1,14 @@
 package goptions
 
 import (
-	"reflect"
-	"strconv"
+	"flag"
 	"fmt"
 	"log"
-	"time"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
-	"flag"
+	"time"
 )
 
 type Goptions struct {

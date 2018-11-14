@@ -26,7 +26,7 @@ func TestUse(t *testing.T) {
 }
 
 func TestMerge(t *testing.T) {
-	opts := &options{Foo:false}
+	opts := &options{Foo: false}
 	cfg := make(map[string]interface{})
 	cfg["foo"] = "true"
 	gop := Use(opts, "json", "toml").Merge("json", cfg)
