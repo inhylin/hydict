@@ -2,48 +2,54 @@ package goptions
 
 import (
 	"testing"
-	"github.com/BurntSushi/toml"
-	"fmt"
-	"time"
-)
+	"reflect"
+	)
 
-type MapFoo struct {
-	Key   string `cfg:"key"`
-	Value string `cfg:"value"`
-}
+func TestNew(t *testing.T) {
+	s := &struct {
+	}{}
+	vs := reflect.ValueOf(s)
 
-type StructFoo struct {
-	Key   string `cfg:"key"`
-	Value string `cfg:"value"`
-}
+	gop := New(s)
+	if _, ok := interface{}(gop).(*Goptions); !ok {
+		t.Errorf("get %T, want %T", gop, &Goptions{})
+	}
 
-type Any struct {
-	TestAny string `cfg:"any-test"`
-}
+	if gop.opts != vs {
+		t.Errorf("get %T, want %T", gop.opts, vs)
+	}
 
-type MapTest struct {
-	Any
-	test         int
-	TestInt      int               `cfg:"int"`
-	TestInt8     int8              `cfg:"int8"`
-	TestInt16    int16             `cfg:"int16"`
-	TestInt32    int32             `cfg:"int32"`
-	TestInt64    int64             `cfg:"int64"`
-	TestDuration time.Duration     `cfg:"duration"`
-	TestString   string            `cfg:"string"`
-	TestBool     bool              `cfg:"bool"`
-	SliceTest    []string          `cfg:"slice"`
-	MapFoo       map[string]MapFoo `cfg:"map-foo"`
-	StructFoo    StructFoo         `cfg:"struct-foo"`
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("panic expected when *Goptions is not given.")
+		}
+	}()
+	New(*s)
 }
 
 func TestMerge(t *testing.T) {
-	var cfg map[string]interface{}
-	opts := MapTest{
-		MapFoo: make(map[string]MapFoo),
-	}
-	toml.DecodeFile("testdata/test.toml", &cfg)
+	s := &struct {
+		TestString string `cfg:"test-string"`
+		S struct {
+			TestChild string `cfg:"test-child"`
+		} `cfg:"s"`
+	}{}
+	cfg := make(map[string]interface{})
+	cfg["test-string"] = "helloTest"
+	child := make(map[string]interface{})
+	child["test-child"] = "testChild"
+	cfg["s"] = child
 
-	New(&opts).Merge("cfg", cfg)
-	fmt.Println("result: ", &opts)
+	gop := New(s).Merge("cfg", cfg)
+	if _, ok := interface{}(gop).(*Goptions); !ok {
+		t.Errorf("get %T, want %T", gop, &Goptions{})
+	}
+
+	if s.TestString != cfg["test-string"] {
+		t.Errorf("get %v, want %v", s.TestString, cfg["test-string"])
+	}
+
+	if s.S.TestChild != child["test-child"] {
+		t.Errorf("get %v, want %v", s.TestString, child["test-child"])
+	}
 }
