@@ -1,9 +1,9 @@
-package goptions
+package main
 
 import (
-	"testing"
-	"github.com/BurntSushi/toml"
+	"github.com/yinhylin/goptions"
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"time"
 )
 
@@ -37,13 +37,14 @@ type MapTest struct {
 	StructFoo    StructFoo         `cfg:"struct-foo"`
 }
 
-func TestMerge(t *testing.T) {
+func main() {
 	var cfg map[string]interface{}
 	opts := MapTest{
 		MapFoo: make(map[string]MapFoo),
 	}
-	toml.DecodeFile("testdata/test.toml", &cfg)
+	toml.DecodeFile("../testdata/test.toml", &cfg)
+	fmt.Println(cfg)
 
-	New(&opts).Merge("cfg", cfg)
+	goptions.New(&opts).Merge("cfg", cfg)
 	fmt.Println("result: ", &opts)
 }

@@ -1,0 +1,26 @@
+bool = true
+string = "testString"
+slice = ["slice1", "slice2", "slice3"]
+any-test = "anyTest"
+int = 369
+int8 = 8
+int16 = 16
+int32 = 32
+int64 = 64
+duration = 3000 # 3s
+
+[mongodb.test]
+    url = "127.0.0.1"
+    dbname = "blog"
+
+[map-foo.test]
+    key = "test1"
+    value = "val1"
+
+[map-foo.bar]
+    key = "test2"
+    value = "val2"
+
+[struct-foo]
+    key = "struct-key"
+    value = "struct-value"
