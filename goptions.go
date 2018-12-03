@@ -150,6 +150,8 @@ func format(vv reflect.Value, v interface{}) (interface{}, error) {
 
 		vi := reflect.ValueOf(i)
 		return vi.Convert(tv).Interface(), nil
+	case reflect.Interface:
+		return reflect.ValueOf(v), nil
 	default:
 		return nil, fmt.Errorf("invalid option %s (%+v) value type %T", tv.Name(), tv.Kind(), v)
 	}
